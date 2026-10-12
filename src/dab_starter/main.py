@@ -17,7 +17,9 @@ def main() -> None:
     spark = SparkSession.builder.getOrCreate()
     spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target}")
     orders = spark.read.table("samples.tpch.orders")
-    daily_revenue(clean_orders(orders)).write.mode("overwrite").saveAsTable(f"{target}.daily_revenue")
+    daily_revenue(clean_orders(orders)).write.mode("overwrite").saveAsTable(
+        f"{target}.daily_revenue"
+    )
 
 
 if __name__ == "__main__":

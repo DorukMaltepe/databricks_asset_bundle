@@ -9,7 +9,7 @@ dependencies = []
 main = "dab_starter.main:main"
 
 [dependency-groups]
-dev = ["pytest>=8", "pyspark>=3.5,<4"]
+dev = ["pytest>=8", "pyspark>=3.5,<4", "ruff"]
 
 [build-system]
 requires = ["hatchling"]
