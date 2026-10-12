@@ -1,0 +1,19 @@
+[project]
+name = "dab_starter"
+version = "0.1.0"
+requires-python = ">=3.11"
+# pyspark is provided by the Databricks runtime, so it is a dev-only dependency.
+dependencies = []
+
+[project.scripts]
+main = "dab_starter.main:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "pyspark>=3.5,<4"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

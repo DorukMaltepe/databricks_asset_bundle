@@ -1,0 +1,53 @@
+bundle:
+  name: dab_starter
+
+include:
+  - resources/*.yml
+
+artifacts:
+  default:
+    type: whl
+    build: uv build --wheel
+    path: .
+
+variables:
+  catalog:
+    description: Unity Catalog catalog the job writes to (one per environment).
+  schema:
+    description: Schema the job writes to.
+    default: reporting
+  engineers_group:
+    description: Group that gets read access to deployed jobs in staging/prod.
+    default: data-engineers
+
+targets:
+  # Each developer deploys their own copy: names get a "[dev <user>]" prefix and schedules are paused.
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://<dev-workspace-host>
+    variables:
+      catalog: dev
+      schema: dev_${workspace.current_user.short_name}
+
+  # Deployed by CI (a service principal) on every merge to main.
+  staging:
+    workspace:
+      host: https://<staging-workspace-host>
+    variables:
+      catalog: staging
+    permissions:
+      - group_name: ${var.engineers_group}
+        level: CAN_VIEW
+
+  # Same commit as staging, promoted after a manual approval in GitHub.
+  prod:
+    mode: production
+    workspace:
+      host: https://<prod-workspace-host>
+    variables:
+      catalog: prod
+    permissions:
+      - group_name: ${var.engineers_group}
+        level: CAN_VIEW

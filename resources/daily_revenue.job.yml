@@ -1,0 +1,21 @@
+resources:
+  jobs:
+    daily_revenue:
+      name: daily-revenue
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: UTC
+      tasks:
+        - task_key: build_daily_revenue
+          environment_key: default
+          python_wheel_task:
+            package_name: dab_starter
+            entry_point: main
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}"]
+      # Serverless: no cluster config to maintain per environment.
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "2"
+            dependencies:
+              - ../dist/*.whl
